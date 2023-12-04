@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Paint App</title>
+        <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet"
+            href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+        <link rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+            integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+            crossorigin="anonymous">
+        <style>
+        #canvas {
+            border: 1px solid #ccc;
+            cursor: crosshair;
+        }
+    </style>
+    </head>
+    <body>
+        <div class="body">
+            <div class="container mt-4">
+                <div>
+                    <canvas id="canvas" width="800" height="600"></canvas>
+                </div>
+
+                <div class="form-group d-inline">
+                    <button id="clean" class="button"><i class="far fa-file"></i></button>
+                    <button id="eraser" class="button"><i class="fas fa-eraser"></i></button>
+                </div>
+
+                <div class="form-group d-inline">
+                    <div class="btn-group">
+                        <button id="blueBrush" class="button"
+                            style="background-color: blue;"><i class="fas
+                                fa-paint-brush" style="color: white;"></i></button>
+                        <button id="blackBrush" class="button"
+                            style="background-color: black;"><i class="fas
+                                fa-paint-brush" style="color: white;"></i></button>
+                        <button id="redBrush" class="button"
+                            style="background-color: red;"><i class="fas
+                                fa-paint-brush" style="color: white;"></i></button>
+                        <button id="yellowBrush" class="button"
+                            style="background-color: yellow;"><i class="fas
+                                fa-paint-brush" style="color: white;"></i></button>
+                    </div>
+                </div>
+
+
+                <div>
+                    <div class="form-group">
+                        <label class="form-label">Brush Size</label>
+                        <input id="brushSizeSlider" type="range" min="2"
+                            max="15" value="5" class="slider">
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let brushSize = 5;
+        let brushColor = 'black';
+
+        function startDrawing(e) {
+            isDrawing = true;
+            draw(e);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = brushColor;
+
+            ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+
+        function changeBrushSize() {
+            brushSize = document.getElementById('brushSizeSlider').value;
+        }
+
+        function changeBrushColor(color) {
+            brushColor = color;
+        }
+
+        function erase() {
+            brushColor = 'white';
+        }
+
+        function cleanCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mousemove', draw);
+        document.getElementById('brushSizeSlider').addEventListener('input', changeBrushSize);
+        document.getElementById('blueBrush').addEventListener('click', () => changeBrushColor('blue'));
+        document.getElementById('blackBrush').addEventListener('click', () => changeBrushColor('black'));
+        document.getElementById('redBrush').addEventListener('click', () => changeBrushColor('red'));
+        document.getElementById('yellowBrush').addEventListener('click', () => changeBrushColor('yellow'));
+        document.getElementById('eraser').addEventListener('click', erase);
+        document.getElementById('clean').addEventListener('click', cleanCanvas);
+    });
+</script>
+    </body>
+</html>
